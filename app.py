@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask_mysqldb import MySQL
-import MySQLdb.cursors
-import re
+import mysql.connector
 
 
 app = Flask(__name__)
@@ -9,14 +7,10 @@ app = Flask(__name__)
 
 app.secret_key = 'Srinivas'
 
-
-app.config['MYSQL_HOST'] = 'sql6.freesqldatabase.com'
-app.config['MYSQL_USER'] = 'sql6692017'
-app.config['MYSQL_PASSWORD'] = '2DcjLXDFwG'
-app.config['MYSQL_DB'] = 'sql6692017'
-
-
-mysql = MySQL(app)
+mydb = mysql.connector.connect(host="sql6.freesqldatabase.com",
+ user="sql6692017",
+ password="2DcjLXDFwG",
+ database="sql6692017")
 
 
 @app.route('/')
@@ -26,7 +20,7 @@ def login():
 	if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
 		username = request.form['username']
 		password = request.form['password']
-		cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+		cursor = mydb.cursor()
 		cursor.execute(
 			'SELECT * FROM accounts WHERE username = % s \
 			AND password = % s', (username, password, ))
@@ -63,7 +57,7 @@ def register():
 		state = request.form['state']
 		country = request.form['country']
 		postalcode = request.form['postalcode']
-		cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mydb.cursor()
 		cursor.execute(
 			'SELECT * FROM accounts WHERE username = % s', (username, ))
 		account = cursor.fetchone()
@@ -79,7 +73,7 @@ def register():
 						(username, password, email, 
 							organisation, address, city,
 							state, country, postalcode, ))
-			mysql.connection.commit()
+			mydb.commit()
 			msg = 'You have successfully registered !'
 	elif request.method == 'POST':
 		msg = 'Please fill out the form !'
@@ -96,7 +90,7 @@ def index():
 @app.route("/display")
 def display():
 	if 'loggedin' in session:
-		cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor = mydb.cursor()
 		cursor.execute('SELECT * FROM accounts WHERE id = % s',
 					(session['id'], ))
 		account = cursor.fetchone()
@@ -118,7 +112,7 @@ def update():
 			state = request.form['state']
 			country = request.form['country']
 			postalcode = request.form['postalcode']
-			cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+			cursor = mydb.cursor()
 			cursor.execute(
 				'SELECT * FROM accounts WHERE username = % s',
 					(username, ))
