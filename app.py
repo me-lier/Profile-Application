@@ -57,7 +57,7 @@ def register():
 		state = request.form['state']
 		country = request.form['country']
 		postalcode = request.form['postalcode']
-    cursor = mydb.cursor()
+		cursor = mydb.cursor()
 		cursor.execute(
 			'SELECT * FROM accounts WHERE username = % s', (username, ))
 		account = cursor.fetchone()
@@ -90,7 +90,7 @@ def index():
 @app.route("/display")
 def display():
 	if 'loggedin' in session:
-    cursor = mydb.cursor()
+		cursor = mydb.cursor()
 		cursor.execute('SELECT * FROM accounts WHERE id = % s',
 					(session['id'], ))
 		account = cursor.fetchone()
@@ -140,4 +140,4 @@ def update():
 
 
 if __name__ == "__main__":
-	app.run(host="localhost", port=int("5000"))
+	app.run(host='0.0.0.0', debug=True)
