@@ -5,11 +5,10 @@ app = Flask(__name__)
 
 app.secret_key = 'Srinivas'
 
-mydb = mysql.connector.connect(host="sql6.freesqldatabase.com",
-                               user="sql6692017",
-                               password="2DcjLXDFwG",
-                               database="sql6692017")
-
+mydb=mysql.connector.connect(host='bo6ls6ndgzkwqnopeojn-mysql.services.clever-cloud.com',
+                             user='uqcexkezwp1xxorr',
+                             password='eAaEFy8E5oUFrAMHWCYp',
+                             database='bo6ls6ndgzkwqnopeojn')
 
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
