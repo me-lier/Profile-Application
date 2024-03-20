@@ -1,14 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-import mysql.connector
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
+import re
 
 app = Flask(__name__)
-
 app.secret_key = 'Srinivas'
 
-mydb=mysql.connector.connect(host='bo6ls6ndgzkwqnopeojn-mysql.services.clever-cloud.com',
-                             user='uqcexkezwp1xxorr',
-                             password='eAaEFy8E5oUFrAMHWCYp',
-                             database='bo6ls6ndgzkwqnopeojn')
+app.config['MYSQL_HOST']='bo6ls6ndgzkwqnopeojn-mysql.services.clever-cloud.com'
+app.config['MYSQL_USER']='uqcexkezwp1xxorr'
+app.config['MYSQL_PASSWORD']='eAaEFy8E5oUFrAMHWCYp'
+app.config['MYSQL_DB']='bo6ls6ndgzkwqnopeojn'
+
+mysql=MySQL(app)
 
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
@@ -17,9 +20,9 @@ def login():
   if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
     username = request.form['username']
     password = request.form['password']
-    cursor = mydb.cursor()
-    cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s',(username, password,))
-    account = cursor.fetchone()
+    cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute('SELECT * FROM accounts WHERE username = %s AND password = %s',(username, password,))
+    account = cur.fetchone()
     if account:
       session['loggedin'] = True
       session['id'] = account['id']
@@ -52,9 +55,9 @@ def register():
     state = request.form['state']
     country = request.form['country']
     postalcode = request.form['postalcode']
-    cursor = mydb.cursor()
-    cursor.execute('SELECT * FROM accounts WHERE username = % s', (username, ))
-    account = cursor.fetchone()
+    cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute('SELECT * FROM accounts WHERE username = % s', (username, ))
+    account = cur.fetchone()
     if account:
       msg = 'Account already exists !'
     elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -62,8 +65,8 @@ def register():
     elif not re.match(r'[A-Za-z0-9]+', username):
       msg = 'name must contain only characters and numbers !'
     else:
-      cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s, % s, % s, % s, % s, % s)', (username, password, email, organisation, address, city, state, country, postalcode,))
-      mydb.commit()
+      cur.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s, % s, % s, % s, % s, % s)', (username, password, email, organisation, address, city, state, country, postalcode,))
+      mysql.connection.commit()
       msg = 'You have successfully registered !'
   elif request.method == 'POST':
     msg = 'Please fill out the form !'
@@ -80,9 +83,9 @@ def index():
 @app.route("/display")
 def display():
   if 'loggedin' in session:
-    cursor = mydb.cursor()
-    cursor.execute('SELECT * FROM accounts WHERE id = % s', (session['id'], ))
-    account = cursor.fetchone()
+    cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute('SELECT * FROM accounts WHERE id = % s', (session['id'], ))
+    account = cur.fetchone()
     return render_template("display.html", account=account)
   return redirect(url_for('login'))
 
@@ -101,10 +104,10 @@ def update():
       state = request.form['state']
       country = request.form['country']
       postalcode = request.form['postalcode']
-      cursor = mydb.cursor()
-      cursor.execute('SELECT * FROM accounts WHERE username = % s',
+      cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+      cur.execute('SELECT * FROM accounts WHERE username = % s',
                      (username, ))
-      account = cursor.fetchone()
+      account = cur.fetchone()
       if account:
         msg = 'Account already exists !'
       elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -112,7 +115,7 @@ def update():
       elif not re.match(r'[A-Za-z0-9]+', username):
         msg = 'name must contain only characters and numbers !'
       else:
-        cursor.execute(
+        cur.execute(
             'UPDATE accounts SET username =%s, password =%s, email =%s, organisation =%s ,address =%s, city =%s, state =%s, country =% s, postalcode =%s WHERE id =%s', (username, password, email, organisation, address, city, state, country, postalcode, (session['id']),))
         mysql.connection.commit()
         msg = 'You have successfully updated !'
