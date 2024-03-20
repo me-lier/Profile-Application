@@ -115,8 +115,7 @@ def update():
       elif not re.match(r'[A-Za-z0-9]+', username):
         msg = 'name must contain only characters and numbers !'
       else:
-        cur.execute(
-            'UPDATE accounts SET username =%s, password =%s, email =%s, organisation =%s ,address =%s, city =%s, state =%s, country =% s, postalcode =%s WHERE id =%s', (username, password, email, organisation, address, city, state, country, postalcode, (session['id']),))
+        cur.execute('UPDATE accounts SET username =%s, password =%s, email =%s, organisation =%s ,address =%s, city =%s, state =%s, country =% s, postalcode =%s WHERE id =%s', (username, password, email, organisation, address, city, state, country, postalcode, (session['id']),))
         mysql.connection.commit()
         msg = 'You have successfully updated !'
     elif request.method == 'POST':
