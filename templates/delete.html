@@ -1,0 +1,36 @@
+<html lang="en">
+	<head>
+		<title>index</title>
+		<link rel="stylesheet" href="../static/style.css">
+	</head>
+
+	<body bgcolor="#e6ffee">
+		<div class="one">
+			<div class="two">
+				<h1>Side Bar</h1>
+				<ul>
+					<li class="active"><a href="{{url_for('index')}}">Index</a></li>
+					<li><a href="{{url_for('display')}}">Display</a></li>
+					<li><a href="{{url_for('update')}}">Update</a></li>
+					<li><a href="{{url_for('logout')}}">Log out</a></li>
+                    <li><a href="{{url_for('delete')}}"</li>Delete</a></li>
+				</ul>
+			</div>
+			<div class="content" align="center">
+				<div class="topbar">
+					<h2>Welcome!! You are in Delete Page!! </h2>
+				</div></br></br>
+				<div class="contentbar">
+					<div class="loginbottom">
+			<form action="{{ url_for('delete')}}" method="post">
+			<div class="msg">{{ msg }}</div>
+                <input type="submit" class="btn" value="Delete">
+                <input type="text" name="username" placeholder="Enter Your Username" class="textbox" id="username" required></br></br></br>
+			</form></br></br></div>
+
+				</div>
+
+			</div>
+		</div>
+	</body>
+</html>
