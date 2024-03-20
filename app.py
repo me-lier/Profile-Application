@@ -18,12 +18,7 @@ def login():
     username = request.form['username']
     password = request.form['password']
     cursor = mydb.cursor()
-    cursor.execute(
-        'SELECT * FROM accounts WHERE username = % s \
-			AND password = % s', (
-            username,
-            password,
-        ))
+    cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s',(username, password,))
     account = cursor.fetchone()
     if account:
       session['loggedin'] = True
@@ -67,19 +62,7 @@ def register():
     elif not re.match(r'[A-Za-z0-9]+', username):
       msg = 'name must contain only characters and numbers !'
     else:
-      cursor.execute(
-          'INSERT INTO accounts VALUES \
-			(NULL, % s, % s, % s, % s, % s, % s, % s, % s, % s)', (
-              username,
-              password,
-              email,
-              organisation,
-              address,
-              city,
-              state,
-              country,
-              postalcode,
-          ))
+      cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s, % s, % s, % s, % s, % s)', (username, password, email, organisation, address, city, state, country, postalcode,))
       mydb.commit()
       msg = 'You have successfully registered !'
   elif request.method == 'POST':
@@ -130,21 +113,7 @@ def update():
         msg = 'name must contain only characters and numbers !'
       else:
         cursor.execute(
-            'UPDATE accounts SET username =% s,\
-				password =% s, email =% s, organisation =% s, \
-				address =% s, city =% s, state =% s, \
-				country =% s, postalcode =% s WHERE id =% s', (
-                username,
-                password,
-                email,
-                organisation,
-                address,
-                city,
-                state,
-                country,
-                postalcode,
-                (session['id'], ),
-            ))
+            'UPDATE accounts SET username =%s, password =%s, email =%s, organisation =%s ,address =%s, city =%s, state =%s, country =% s, postalcode =%s WHERE id =%s', (username, password, email, organisation, address, city, state, country, postalcode, (session['id']),))
         mysql.connection.commit()
         msg = 'You have successfully updated !'
     elif request.method == 'POST':
