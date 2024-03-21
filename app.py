@@ -122,19 +122,12 @@ def update():
       msg = 'Please fill out the form !'
     return render_template("update.html", msg=msg)
   return redirect(url_for('login'))
-@app.route("/delete", methods=['GET','POST'])
 def delete():
-  msg=''
-  if 'loggedin' in session:
-    if request.method == 'POST' and 'username' in request.form:
-      username=request.form['username']
-      if session['username']==username:
-        cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute('DELETE FROM accounts WHERE id = % s', (session['id'], ))
-        mysql.connection.commit()
-        msg="Account Succesfully Deleted🥹"
-        return render_template('index.html',msg=msg)
-  return redirect(url_for('login'))
+  cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+  cur.execute('DELETE FROM accounts WHERE id = % s', (session['id'], ))
+  mysql.connection.commit()
+  msg='Your Account has been successfully deleted->🥹'
+  return render_template('login.html'msg=msg)
 
 if __name__ == "__main__":
   app.run(debug=True)
