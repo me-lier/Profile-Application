@@ -28,10 +28,10 @@ def login():
       session['loggedin'] = True
       session['id'] = account['id']
       session['username'] = account['username']
-      msg = 'Logged in successfully !'
+      msg = 'Logged in successfully !😇'
       return render_template('index.html', msg=msg)
     else:
-      msg = 'Incorrect username / password !'
+      msg = 'Incorrect username / password !🤬'
   return render_template('login.html', msg=msg)
 
 
@@ -60,17 +60,17 @@ def register():
     cur.execute('SELECT * FROM accounts WHERE username = % s', (username, ))
     account = cur.fetchone()
     if account:
-      msg = 'Account already exists !'
+      msg = 'Account already exists !🤪'
     elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-      msg = 'Invalid email address !'
+      msg = 'Invalid email address !😨'
     elif not re.match(r'[A-Za-z0-9]+', username):
-      msg = 'name must contain only characters and numbers !'
+      msg = 'name must contain only characters and numbers !🥴'
     else:
       cur.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s, % s, % s, % s, % s, % s, % s)', (username, password, email, organisation, address, city, state, country, postalcode,))
       mysql.connection.commit()
-      msg = 'You have successfully registered !'
+      msg = 'You have successfully registered !🤩'
   elif request.method == 'POST':
-    msg = 'Please fill out the form !'
+    msg = 'Please fill out the form !😵'
   return render_template('register.html', msg=msg)
 
 
@@ -110,17 +110,17 @@ def update():
                      (username, ))
       account = cur.fetchone()
       if account:
-        msg = 'Account already exists !'
+        msg = 'Account already exists !😎'
       elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-        msg = 'Invalid email address !'
+        msg = 'Invalid email address !😗'
       elif not re.match(r'[A-Za-z0-9]+', username):
-        msg = 'name must contain only characters and numbers !'
+        msg = 'name must contain only characters and numbers !😶‍🌫️'
       else:
         cur.execute('UPDATE accounts SET username =%s, password =%s, email =%s, organisation =%s ,address =%s, city =%s, state =%s, country =% s, postalcode =%s WHERE id =%s', (username, password, email, organisation, address, city, state, country, postalcode, (session['id']),))
         mysql.connection.commit()
-        msg = 'You have successfully updated !'
+        msg = 'You have successfully updated !🤩'
     elif request.method == 'POST':
-      msg = 'Please fill out the form !'
+      msg = 'Please fill out the form !😑'
     return render_template("update.html", msg=msg)
   return redirect(url_for('login'))
 
@@ -130,7 +130,7 @@ def delete():
   cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
   cur.execute('DELETE FROM accounts WHERE id = % s', (session['id'], ))
   mysql.connection.commit()
-  msg='Your Account has been successfully deleted->🥹'
+  msg='Your Account has been successfully deleted->🥹😔😓'
   return render_template('login.html',msg=msg)
 
 
