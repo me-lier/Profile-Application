@@ -13,6 +13,7 @@ app.config['MYSQL_DB']='bo6ls6ndgzkwqnopeojn'
 
 mysql=MySQL(app)
 
+
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -122,6 +123,8 @@ def update():
       msg = 'Please fill out the form !'
     return render_template("update.html", msg=msg)
   return redirect(url_for('login'))
+
+
 @app.route("/delete", methods=['GET', 'POST'])
 def delete():
   cur=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -129,6 +132,8 @@ def delete():
   mysql.connection.commit()
   msg='Your Account has been successfully deleted->🥹'
   return render_template('login.html',msg=msg)
+
+
 
 if __name__ == "__main__":
   app.run(debug=True)
