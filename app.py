@@ -127,7 +127,7 @@ def delete():
   cur.execute('DELETE FROM accounts WHERE id = % s', (session['id'], ))
   mysql.connection.commit()
   msg='Your Account has been successfully deleted->🥹'
-  return render_template('login.html'msg=msg)
+  return render_template('login.html',msg=msg)
 
 if __name__ == "__main__":
   app.run(debug=True)
